@@ -14,6 +14,9 @@ import topo_sort.Graph.Node;
 public class Graph_ks {
 	Set<Node> graph = new HashSet<Node>();
 
+	public Graph_ks() {
+	}
+
 	public Graph_ks(Node[] nodes) {
 		for (Node node : nodes) {
 			graph.add(node);
@@ -21,15 +24,18 @@ public class Graph_ks {
 	}
 
 	static class Node {
-		public String nodeName;
-		public Set<Edge> edgesIn;
-		public Set<Edge> edgesOut;
+		public final String nodeName;
+		public final Set<Edge> edgesIn;
+		public final Set<Edge> edgesOut;
 
 		public Node(String name) {
 			nodeName = name;
+			edgesIn = new HashSet<Edge>();
+			edgesOut = new HashSet<Edge>();
 		}
 
 		public Node addEdge(Node newNode) {
+
 			Edge e = new Edge(this, newNode);
 			edgesOut.add(e);
 			newNode.edgesIn.add(e);
@@ -50,13 +56,28 @@ public class Graph_ks {
 		public String toString() {
 			return nodeName;
 		}
+
+		public String debugString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(nodeName);
+			sb.append("\noutgoing edges:");
+			for (Edge edge : edgesOut) {
+				sb.append("\n" + edge);
+			}
+			sb.append("\nincoming edges:");
+			for (Edge edge : edgesIn) {
+				sb.append("\n" + edge);
+			}
+			sb.append("\n");
+			return sb.toString();
+		}
 	}
 
 	static class Edge {
-		public Node to;
-		public Node from;
+		public final Node to;
+		public final Node from;
 
-		public Edge(Node t, Node f) {
+		public Edge(Node f, Node t) {
 			to = t;
 			from = f;
 		}
@@ -65,6 +86,11 @@ public class Graph_ks {
 		public boolean equals(Object obj) {
 			Edge other = (Edge) obj;
 			return other.to == to && other.from == from;
+		}
+
+		@Override
+		public String toString() {
+			return "from " + from.toString() + " to " + to.toString();
 		}
 	}
 
@@ -86,6 +112,7 @@ public class Graph_ks {
 	private void topologicalSortUtil(Node v, Deque<Node> stack,
 			Set<Node> visited) {
 
+		System.out.println(v + " has been visited");
 		visited.add(v);
 		for (Edge e : v.edgesOut) {
 			Node nextNode = e.to;
@@ -93,6 +120,7 @@ public class Graph_ks {
 				continue;
 			}
 		}
+		System.out.println("add " + v);
 		stack.offerFirst(v);
 	}
 
@@ -111,7 +139,9 @@ public class Graph_ks {
 		return false;
 	}
 
+	// public void dummy() {
 	public static void main(String[] args) {
+
 		Node seven = new Node("7");
 		Node five = new Node("5");
 		Node three = new Node("3");
@@ -127,9 +157,23 @@ public class Graph_ks {
 		eight.addEdge(nine).addEdge(ten);
 
 		Node[] allNodes = { seven, five, three, eleven, eight, two, nine, ten };
-		// L <- Empty list that will contain the sorted elements
-		ArrayList<Node> L = new ArrayList<Node>();
+		Graph_ks gks = new Graph_ks(allNodes);
 
+		if (gks.isCyclic()) {
+			System.out.println("Cycle present, topological sort not possible");
+		} else {
+			Deque<Node> sorted = gks.topologicalSort();
+
+			for (Node n : sorted) {
+				System.out.print(n + " ");
+			}
+		}
 	}
 
+	public void printAllNodes() {
+
+		for (Node node : graph) {
+			System.out.println(node.debugString());
+		}
+	}
 }
