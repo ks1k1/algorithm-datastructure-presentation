@@ -9,7 +9,7 @@ import org.junit.Test;
 import topo_sort.Graph_ks.Node;
 
 public class TestTopoS {
-	@Test
+	 @Test
 	public void testTopo2() {
 		Node a = new Node("a");
 		Node b = new Node("b");
@@ -27,9 +27,9 @@ public class TestTopoS {
 		e.addEdge(f);
 		f.addEdge(g);
 
-		Node[] allNodes = { e,h,f,g,b,c,d,a };
+		Node[] allNodes = { e, h, f, g, b, c, d, a };
 		Graph_ks gks = new Graph_ks(allNodes);
-		gks.printAllNodes();
+		//gks.printAllNodes();
 		if (gks.isCyclic()) {
 			System.out.println("Cycle present, topological sort not possible");
 		} else {
@@ -39,6 +39,33 @@ public class TestTopoS {
 				System.out.print(n + " ");
 			}
 		}
+	}
+
+	// @Test
+	public void testIsALeaf() {
+		Node a = new Node("a");
+		Node b = new Node("b");
+		Node c = new Node("c");
+		Node d = new Node("d");
+		Node e = new Node("e");
+		Node f = new Node("f");
+		Node g = new Node("g");
+		Node h = new Node("h");
+		a.addEdge(c);
+		b.addEdge(c);
+		b.addEdge(d);
+		c.addEdge(e);
+		e.addEdge(h);
+		e.addEdge(f);
+		f.addEdge(g);
+
+		System.out.println("is a a leaf? " + a.isALeaf(a));
+		System.out.println("is b a leaf? " + a.isALeaf(b));
+		System.out.println("is c a leaf? " + a.isALeaf(c));
+		System.out.println("is d a leaf? " + a.isALeaf(d));
+		System.out.println("is e a leaf? " + a.isALeaf(e));
+		System.out.println("is g a leaf? " + a.isALeaf(g));
+
 	}
 
 	// @Test

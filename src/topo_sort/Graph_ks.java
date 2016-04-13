@@ -1,15 +1,9 @@
 package topo_sort;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-
-import topo_sort.Graph.Edge;
-import topo_sort.Graph.Node;
 
 public class Graph_ks {
 	Set<Node> graph = new HashSet<Node>();
@@ -99,11 +93,11 @@ public class Graph_ks {
 		Deque<Node> stack = new ArrayDeque<>(); // no-kids
 		Set<Node> visited = new HashSet<Node>();
 
-		for (Node v : graph) {
-			if (visited.contains(v)) {
+		for (Node n : graph) {
+			if (visited.contains(n)) {
 				continue;
 			}
-			topologicalSortUtil(v, stack, visited);
+			topologicalSortUtil(n, stack, visited);
 		}
 
 		return stack;
@@ -112,15 +106,16 @@ public class Graph_ks {
 	private void topologicalSortUtil(Node v, Deque<Node> stack,
 			Set<Node> visited) {
 
-		System.out.println(v + " has been visited");
+		System.out.println(v + " has been visited, added to visited set");
 		visited.add(v);
 		for (Edge e : v.edgesOut) {
-			Node nextNode = e.to;
-			if (!nextNode.isALeaf(nextNode)) {
+			Node childNode = e.to;
+			if (visited.contains(childNode)) {
 				continue;
 			}
+			topologicalSortUtil(childNode, stack, visited);
 		}
-		System.out.println("add " + v);
+		System.out.println("add " + v + " to the sorted stack");
 		stack.offerFirst(v);
 	}
 
@@ -158,14 +153,14 @@ public class Graph_ks {
 
 		Node[] allNodes = { seven, five, three, eleven, eight, two, nine, ten };
 		Graph_ks gks = new Graph_ks(allNodes);
-
+		gks.printAllNodes();
 		if (gks.isCyclic()) {
 			System.out.println("Cycle present, topological sort not possible");
 		} else {
 			Deque<Node> sorted = gks.topologicalSort();
 
-			for (Node n : sorted) {
-				System.out.print(n + " ");
+			while (!sorted.isEmpty()) {
+				System.out.print(sorted.poll() + " ");
 			}
 		}
 	}
