@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -91,8 +92,11 @@ public class Graph_ks {
 		}
 	}
 
-	public void DFS_iteration(Node startNode) {
+	public void DFS_iteration_start_at_root() {
+
+		Node startNode = root1;
 		Set<Node> visited = new HashSet<Node>();
+
 		visited.add(startNode);
 		Node currNode = startNode, childNode;
 		System.out.print(startNode + " ");
@@ -104,25 +108,47 @@ public class Graph_ks {
 		}
 	}
 
-	public void BFS_iteration(Node startNode) {
+	public void DFS_iteration(Node startNode) {
 
-		Queue<Node> q = new LinkedList<Node>();
-		Set<Node> visited = new HashSet<Node>();
+		List<Node> visited = new LinkedList<Node>();
+
+		visited.add(startNode);
 		Node currNode = startNode, childNode;
+		System.out.print(startNode + " ");
+		for (Edge e : currNode.edgesOut) {
+			childNode = e.to;
+			if (!(childNode == null) && !visited.contains(childNode)) {
+				DFS_iteration(childNode);
+			}
+		}
+	}
 
-		while (visited.size() > 0) {
-			visited.add(currNode);
+	public void BFS_iteration() {
+		Node startNode = root1;
+		Queue<Node> q = new LinkedList<Node>();
+		List<Node> visited = new LinkedList<Node>();
+		Node currNode = startNode, childNode;
+		System.out.println("start @" + currNode);
+		q.add(currNode);
+
+		while (!q.isEmpty()) {
+			// iterate through curr's child nodes
 			for (Edge e : currNode.edgesOut) {
 				childNode = e.to;
-				if (!(childNode == null) && !visited.contains(childNode)) {
+				if (!(childNode == null) || !visited.contains(childNode)) {
 					q.add(childNode);
+					// System.out.println(childNode + " is added to queue.");
 				}
 			}
-
+			System.out.println(currNode + " is added to visited.");
+			visited.add(currNode);
+			q.poll();
+			currNode = q.peek();
 		}
 
-		System.out.print(startNode + " ");
-
+		for (Node node : visited) {
+			System.out.print(node + " ");
+		}
 	}
 
 	public Deque<Node> topologicalSort() {
@@ -173,21 +199,23 @@ public class Graph_ks {
 	// public void dummy() {
 	public static void main(String[] args) {
 
-		Graph_ks gks = populateGraph01();
+		Graph_ks gks = populateGraph02();
 
-		gks.printAllNodes();
+		// gks.printAllNodes();
 
 		if (gks.isCyclic()) {
 			System.out.println("Cycle present, topological sort not possible");
 		} else {
 			// runTopologicalSort(gks);
-			gks.DFS_iteration(gks.root1);
+			// gks.BFS_iteration();
+			gks.DFS_iteration_start_at_root();
+			// TODO - dfs_iteration, root 1, 2, 3, scenario must be worked out
 		}
 	}
 
-	private static Graph_ks populateGraph01() {
+	private static Graph_ks populateGraph01(String r1) {
 
-		Node seven = new Node("7");
+		Node rn1 = new Node(r1); // rn = root node
 		Node five = new Node("5");
 		Node three = new Node("3");
 		Node eleven = new Node("11");
@@ -195,14 +223,15 @@ public class Graph_ks {
 		Node two = new Node("2");
 		Node nine = new Node("9");
 		Node ten = new Node("10");
-		seven.addEdge(eleven).addEdge(eight);
+		rn1.addEdge(eleven).addEdge(eight);
 		five.addEdge(eleven);
 		three.addEdge(eight).addEdge(ten);
 		eleven.addEdge(two).addEdge(nine).addEdge(ten);
 		eight.addEdge(nine).addEdge(ten);
 
-		Node[] allNodes = { seven, five, three, eleven, eight, two, nine, ten };
+		Node[] allNodes = { rn1, five, three, eleven, eight, two, nine, ten };
 		Graph_ks gks = new Graph_ks(allNodes);
+		gks.setRoot1(rn1);
 
 		return gks;
 	}
@@ -225,6 +254,7 @@ public class Graph_ks {
 		Node[] allNodes = { e, h, f, g, b, c, d, a };
 		Graph_ks gks = new Graph_ks(allNodes);
 		gks.setRoot1(a);
+
 		return gks;
 	}
 

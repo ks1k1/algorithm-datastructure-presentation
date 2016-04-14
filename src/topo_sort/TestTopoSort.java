@@ -11,6 +11,32 @@ import topo_sort.Graph_ks.Node;
 public class TestTopoSort {
 
 	@Test
+	public void testBFStraversal() {
+		Node a = new Node("a");
+		Node b = new Node("b");
+		Node c = new Node("c");
+		Node d = new Node("d");
+		Node e = new Node("e");
+		Node f = new Node("f");
+		Node g = new Node("g");
+		Node h = new Node("h");
+		a.addEdge(b).addEdge(c);
+		b.addEdge(d).addEdge(e);
+		c.addEdge(f).addEdge(g);
+		d.addEdge(h);
+
+		Node[] allNodes = { e, h, f, g, b, c, d, a };
+		Graph_ks gks = new Graph_ks(allNodes);
+		gks.setRoot1(a);
+		// gks.printAllNodes();
+		if (gks.isCyclic()) {
+			// System.out.println("Cycle present, topological sort not possible");
+		} else {
+			gks.BFS_iteration();
+		}
+	}
+	
+	// @Test
 	public void testDFStraversal() {
 		Node a = new Node("a");
 		Node b = new Node("b");
